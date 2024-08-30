@@ -83,7 +83,7 @@ class BrowseFileDialogBreadcrumbs extends BreadCrumbs {
 /**
  * Browse file widget for dialog body
  */
-class BrowseFileDialog extends Widget
+export class BrowseFileDialog extends Widget
   implements Dialog.IBodyWidget<IBrowseFileDialogOptions> {
   directoryListing: DirListing;
   breadCrumbs: BreadCrumbs;

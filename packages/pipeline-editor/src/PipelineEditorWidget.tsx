@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// import * as yaml from 'yaml';
+// import { readFile } from 'fs/promises';
 import {
   PipelineEditor,
   PipelineOutOfDateError,
@@ -60,6 +62,8 @@ import { Signal } from '@lumino/signaling';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+// import { parse } from 'yaml';
 
 import {
   EmptyGenericPipeline,
@@ -463,6 +467,7 @@ const PipelineWrapper: React.FC<IProps> = ({
       contextRef.current.path,
       args.filename ?? ''
     );
+
     if (args.propertyID.includes('dependencies')) {
       const res = await showBrowseFileDialog(
         browserFactory.defaultBrowser.model.manager,
@@ -479,7 +484,39 @@ const PipelineWrapper: React.FC<IProps> = ({
       if (res.button.accept && res.value.length) {
         return res.value.map((v: any) => v.path);
       }
+    } else if (args.propertyID.includes('file_upload')) {
+      // Handle file upload scenario and filter only .yaml files
+      const res = await showBrowseFileDialog(
+        browserFactory.defaultBrowser.model.manager,
+        {
+          startPath: PathExt.dirname(filename),
+          filter: (model: any): boolean => {
+            return (
+              model.type === 'directory' ||
+              model.name.endsWith('.yaml') ||
+              model.name.endsWith('.yml')
+            );
+          }
+        }
+      );
+
+      if (res.button.accept && res.value.length) {
+        const selectedFile = res.value[0].path;
+
+        // Open the selected .yaml file in JupyterLab's editor
+        await commands.execute('docmanager:open', {
+          path: selectedFile,
+          factory: 'Editor'
+        });
+
+        const file = PipelineService.getPipelineRelativeNodePath(
+          contextRef.current.path,
+          selectedFile
+        );
+        return [file];
+      }
     } else {
+      // Handle other scenarios if needed
       const res = await showBrowseFileDialog(
         browserFactory.defaultBrowser.model.manager,
         {
@@ -496,9 +533,20 @@ const PipelineWrapper: React.FC<IProps> = ({
       );
 
       if (res.button.accept && res.value.length) {
+        const selectedFile = res.value[0].path;
+
+        // Check if the selected file is a .yaml file
+        if (selectedFile.endsWith('.yaml') || selectedFile.endsWith('.yml')) {
+          // Open the selected file in JupyterLab's editor
+          await commands.execute('docmanager:open', {
+            path: selectedFile,
+            factory: 'Editor'
+          });
+        }
+
         const file = PipelineService.getPipelineRelativeNodePath(
           contextRef.current.path,
-          res.value[0].path
+          selectedFile
         );
         return [file];
       }
@@ -506,7 +554,6 @@ const PipelineWrapper: React.FC<IProps> = ({
 
     return undefined;
   };
-
   const onPropertiesUpdateRequested = async (args: any): Promise<any> => {
     if (!contextRef.current.path) {
       return args;
@@ -541,6 +588,43 @@ const PipelineWrapper: React.FC<IProps> = ({
       }
     };
   };
+
+  // const onYamlFileSelected = useCallback(async (filePath: string) => {
+  //   try {
+  //     // Read the content of the YAML file
+  //     const fileContent = fs.readFileSync(filePath, 'utf8');
+
+  //     // Parse the YAML content
+  //     const yamlContent = parse(fileContent);
+
+  //     // Prepare an array to hold key-value pairs as input fields
+  //     const inputs = Object.entries(yamlContent).map(([key, value], index) => {
+  //       return (
+  //         <div key={index}>
+  //           <label>{key}</label>
+  //           <input type="text" defaultValue={String(value)} />
+  //         </div>
+  //       );
+  //     });
+
+  //     // Show a dialog with the key-value pairs as input fields
+  //     return showDialog({
+  //       title: 'Edit YAML Key-Value Pairs',
+  //       body: <div>{inputs}</div>,
+  //       buttons: [Dialog.okButton()]
+  //     });
+  //   } catch (err) {
+  //     // Assert the error type as `Error` to access the `message` property
+  //     const errorMessage = err instanceof Error ? err.message : String(err);
+
+  //     // Handle errors (e.g., file not found, parsing errors)
+  //     return showDialog({
+  //       title: 'Error',
+  //       body: <p>Failed to read or parse the YAML file: {errorMessage}</p>,
+  //       buttons: [Dialog.okButton()]
+  //     });
+  //   }
+  // }, []);
 
   const handleOpenComponentDef = useCallback(
     (componentId: string, componentSource: string) => {

@@ -85,7 +85,7 @@ const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = props => {
               onClick={item.onDropIndexClick(item.index)}
               disabled={!item.hasRemove}
             >
-              {props.formContext.trans.__('Remove')}
+              {props.formContext.trans.__('Removeee')}
             </button>
           </div>
         );
@@ -101,6 +101,21 @@ const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = props => {
     </div>
   );
 };
+
+// const CustomButtonField = (props: any) => (
+//   <div>
+//     <button className="jp-mod-styled jp-mod-reject" onClick={props.onClick}>
+//       {props.schema.title}
+//     </button>
+//   </div>
+// );
+
+// // Usage in the form:
+// const uiSchema = {
+//   file_selector_button: {
+//     'ui:field': CustomButtonField
+//   }
+// };
 
 const CustomFieldTemplate: React.FC<FieldTemplateProps> = props => {
   return (
@@ -128,8 +143,22 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = props => {
       )}
       {props.children}
       {props.errors}
+      {/* Nút Browse */}
+      {props.schema.properties?.file_selector_button && (
+        <button
+          type="button"
+          onClick={handleFileSelection} // Gắn logic chọn file vào đây
+        >
+          Browse
+        </button>
+      )}
     </div>
   );
+};
+
+const handleFileSelection = (): void => {
+  console.log('Button clicked! Implement file selection logic here.');
+  // Logic mở dialog chọn file
 };
 
 /**

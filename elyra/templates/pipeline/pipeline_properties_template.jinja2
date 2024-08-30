@@ -23,6 +23,39 @@
         "ui:widget": "textarea"
       }
     },
+    "file_selector": {
+      "type": "object",
+      "properties": {
+        "file_selector_header": {
+          "title": "File Selector",
+          "type": "null",
+          "description": "Select a file for this.",
+          "uihints": {
+            "ui:field": "header"
+          }
+        },
+        "file_selector_input": {
+          "title": "File Input",
+          "type": "string",
+          "uihints": {
+            "ui:placeholder": ".yaml",
+            "ui:widget": "file"
+          }
+        }
+      },
+      "required": ["file_selector_input"]
+    },
+    "file_picker": {
+      "title": "File Picker",
+      "description": "Local file dependencies that need to be copied to remote execution environment.",
+      "type": "string",
+      "uihints": {
+        "files": true,
+        "items": {
+          "ui:placeholder": "*.py"
+        }
+      }
+    },
     "pipeline_defaults": {
       "type": "object",
       "properties": {
@@ -89,7 +122,18 @@
           {% if loop.index != loop|length %}
           ,
           {% endif %}
-        {% endfor %}
+        {% endfor %},
+        "file_upload": {
+          "title": "Upload YAML File",
+          "type": "string",
+          "format": "data-url",
+          "description": "Upload a YAML file for the pipeline.",
+          "uihints": {
+            "ui:widget": "file",
+            "ui:accept": ".yaml, .yml",
+            "ui:field": "header"
+          }
+        }
       }
     }
   }

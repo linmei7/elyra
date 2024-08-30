@@ -29,6 +29,7 @@ from elyra.pipeline.component_catalog import ComponentCache
 from elyra.pipeline.pipeline import Operation
 from elyra.pipeline.pipeline_constants import COS_OBJECT_PREFIX
 from elyra.pipeline.pipeline_constants import ENV_VARIABLES
+from elyra.pipeline.pipeline_constants import FILE_SELECTOR
 from elyra.pipeline.pipeline_constants import KUBERNETES_SECRETS
 from elyra.pipeline.pipeline_constants import PIPELINE_DEFAULTS
 from elyra.pipeline.pipeline_constants import PIPELINE_PARAMETERS
@@ -386,6 +387,7 @@ class Node(AppDataBase):
         propagated_props = {*self.elyra_owned_properties}  # all Elyra-owned props should be propagated
         if self.is_generic:
             propagated_props.add(RUNTIME_IMAGE)  # generic nodes should also have runtime_image propagated
+            propagated_props.add(FILE_SELECTOR)
         return propagated_props
 
     def get_component_parameter(self, key: str, default_value=None) -> Any:

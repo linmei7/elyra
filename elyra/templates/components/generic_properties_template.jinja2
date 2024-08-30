@@ -29,11 +29,7 @@
         "runtime_image": {
           "type": "string",
           "title": "Runtime Image",
-          "required": true,
-          "description": "Container image used as execution environment.",
-          "uihints": {
-            "items": []
-          }
+          "required": true
         },
         "cpu": {
           "type": "integer",
@@ -104,6 +100,34 @@
           "title": "Include Subdirectories",
           "description": "Recursively include subdirectories when submitting a pipeline (This may increase submission time).",
           "default": false
+        },
+        "file_upload": {
+          "title": "Upload YAML File",
+          "description": "Upload YAML file for configuration.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          },
+          "default": [],
+          "uihints": {
+            "files": true,
+            "items": {
+              "ui:placeholder": "*.yaml",
+              "ui:accept": [".yaml", ".yml"]
+            },
+            "ui:callback": "onYamlFileSelected"
+          }
+        },
+        "yaml_content": {
+          "type": "object",
+          "title": "YAML Content",
+          "description": "The content of the selected YAML file.",
+          "properties": {},
+          "uihints": {
+            "ui:dynamicFields": true,
+            "ui:collapsible": true
+          }
         },
         "outputs_header": {
           "type": "null",

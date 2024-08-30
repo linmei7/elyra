@@ -957,6 +957,54 @@ class KubernetesToleration(ElyraPropertyListItem):
         runtime_processor.add_kubernetes_toleration(instance=self, execution_object=execution_object, **kwargs)
 
 
+# class FileSelector(ElyraProperty):
+#     """An ElyraProperty representing a file selector in a pipeline node"""
+
+#     applies_to_generic = False
+#     applies_to_custom = True
+
+#     property_id = FILE_SELECTOR
+#     property_display_name = "File Selector"
+#     property_description = "Select a file to be used in the node."
+
+#     property_attributes = [
+#         ListItemPropertyAttribute(
+#             attribute_id="file_path",
+#             display_name="File Path",
+#             allowed_input_types=[PropertyInputType(base_type="file", placeholder="/path/to/file")],
+#             hidden=False,
+#             required=True,
+#             use_in_key=True,
+#         )
+#     ]
+
+#     def __init__(self, file_path: str, **kwargs):
+#         self.file_path = file_path
+
+#     def get_all_validation_errors(self) -> List[str]:
+#         """Identify configuration issues for this instance"""
+#         validation_errors = []
+#         if not self.file_path:
+#             validation_errors.append("Required file path was not specified.")
+#         # Removed validation for Kubernetes resource name
+
+#         return validation_errors
+
+#     def add_to_execution_object(self, runtime_processor: RuntimePipelineProcessor, execution_object: Any, **kwargs):
+#         """Add FileSelector instance to the execution object for the given runtime processor"""
+#         self.file_path = f"/{self.file_path.strip('/')}"  # normalize path
+#         runtime_processor.add_file_selector(instance=self, execution_object=execution_object, **kwargs)
+#         # Removed Kubernetes resource name from logic
+
+#     def should_discard(self) -> bool:
+#         """
+#         Returns a boolean indicating whether this FileSelector instance should be silently discarded on
+#         the basis of its file path and file type attribute values. If these attributes
+#         don't contain values this instance will not be validated or processed.
+#         """
+#         return not (self.file_path)
+
+
 class ElyraPropertyList(list):
     """
     A list class that exposes functionality specific to lists whose entries are
